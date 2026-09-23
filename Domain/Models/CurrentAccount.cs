@@ -18,10 +18,19 @@ namespace GDB.App.Domain.Models
 
         public override void ProcessDebit(decimal amount)
         {
-            if (amount > (_balance + _overdraftLimit))
+            if (!CheckIfOverdraftLimitIsExceeded(amount))
                 throw new InsufficientBalanceException("Overdraft limit exceeded");
             _balance -= amount;
             
+        }
+
+        public bool CheckIfOverdraftLimitIsExceeded(decimal amount)
+        {
+            if (amount > (_balance + _overdraftLimit))
+            {
+                return false;
+            }
+            return true;
         }
 
         public decimal OverdraftLimit { get => _overdraftLimit; set => _overdraftLimit = value; }

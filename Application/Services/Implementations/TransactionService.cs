@@ -34,12 +34,13 @@ namespace GDB.App.Application.Services.Implementations
         {
             IAccount account = await _accountRepository.GetAccountAsync(accountNumber);
 
-            if (account == null)
+            if (CheckIfAccountIsNull(account))
             {
                 _logger.LogWarning("Deposit failed: account {AccountNumber} not found", accountNumber);
-                throw new Exception("Account not found");
+                throw new AccountException("Account not found");
             }
 
+            //should follow domain driven architecture
             account.Deposit(amount);//method in Account.cs
 
             _accountRepository.UpdateBalance(
@@ -63,6 +64,15 @@ namespace GDB.App.Application.Services.Implementations
             };
         }
 
+        public bool CheckIfAccountIsNull(IAccount account)
+        {
+            if (account == null)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<WithdrawResponseDto> WithdrawAsync(
             string accountNumber,
             string pin,
@@ -70,14 +80,15 @@ namespace GDB.App.Application.Services.Implementations
         {
             IAccount account = await _accountRepository.GetAccountAsync(accountNumber);
 
-            if (account == null)
+            if (CheckIfAccountIsNull(account))
             {
                 _logger.LogWarning("Withdraw failed: account {AccountNumber} not found", accountNumber);
                 throw new Exception("Account not found");
             }
 
+            //This should also follow domain driven architecture
             account.Withdraw( amount, pin);//method in Account.cs
-
+            //We can make a method for this 
             _accountRepository.UpdateBalance(
                     accountNumber,
                     account.Balance
@@ -115,7 +126,7 @@ namespace GDB.App.Application.Services.Implementations
             {
                 // Get From Account
                 fromAccount = await GetAccountAsync(fromAccountNumber);
-                if (fromAccount == null)
+                if (CheckIfAccountIsNull(fromAccount))
                 {
                     _logger.LogWarning("Transfer failed: from account {AccountNumber} not found", fromAccountNumber);
                     throw new Exception("From account not found");
@@ -127,7 +138,7 @@ namespace GDB.App.Application.Services.Implementations
                 // Get To Account
                 toAccount =await  GetAccountAsync(toAccountNumber);
 
-                if (toAccount == null)
+                if (CheckIfAccountIsNull(toAccount))
                 {
                     _logger.LogWarning("Transfer failed: to account {AccountNumber} not found", toAccountNumber);
                     throw new Exception("To account not found");
@@ -139,10 +150,10 @@ namespace GDB.App.Application.Services.Implementations
                 // Check PIN
                 CheckIfPinIsValid(fromAccount, pin);
 
-                Console.WriteLine("BEFORE TRANSFER");
+                //Console.WriteLine("BEFORE TRANSFER");
 
-                DisplayAccount("FROM ACCOUNT", fromAccount);
-                DisplayAccount("TO ACCOUNT", toAccount);
+                //DisplayAccount("FROM ACCOUNT", fromAccount);
+                //DisplayAccount("TO ACCOUNT", toAccount);
 
                 // Withdraw from sender
                 fromAccount.Withdraw(amount, pin);
@@ -165,10 +176,10 @@ namespace GDB.App.Application.Services.Implementations
                     toAccount.Balance
                 );
 
-                Console.WriteLine("AFTER TRANSFER");
+                //Console.WriteLine("AFTER TRANSFER");
 
-                DisplayAccount("FROM ACCOUNT", fromAccount);
-                DisplayAccount("TO ACCOUNT", toAccount);
+                //DisplayAccount("FROM ACCOUNT", fromAccount);
+                //DisplayAccount("TO ACCOUNT", toAccount);
 
                 status = TransactionStatus.Success;
                 _logger.LogInformation("Transferred {Amount} from {FromAccount} to {ToAccount}", amount, fromAccountNumber, toAccountNumber);
@@ -218,7 +229,7 @@ namespace GDB.App.Application.Services.Implementations
 
 
 
-            if (account.Status != AccountStatus.Active)
+            if (!account.CheckIfAccountIsActive())
                 throw new InactiveAccountException();
 
 
@@ -257,15 +268,15 @@ namespace GDB.App.Application.Services.Implementations
             return account;
 
         }
-        private void DisplayAccount(string message, IAccount account)
-        {
-            Console.WriteLine(message);
-            Console.WriteLine("--------------------------------");
-            Console.WriteLine($"Account Number : {account.AccountNumber}");
-            Console.WriteLine($"Name           : {account.Name}");
-            Console.WriteLine($"Balance        : {account.Balance}");
-            Console.WriteLine();
-        }
+        //private void DisplayAccount(string message, IAccount account)
+        //{
+        //    Console.WriteLine(message);
+        //    Console.WriteLine("--------------------------------");
+        //    Console.WriteLine($"Account Number : {account.AccountNumber}");
+        //    Console.WriteLine($"Name           : {account.Name}");
+        //    Console.WriteLine($"Balance        : {account.Balance}");
+        //    Console.WriteLine();
+        //}
         public async Task<List<ViewRecentTransactionsResponseDto>> GetRecentTransactionsAsync(string accountNumber)
         {
             IAccount account =

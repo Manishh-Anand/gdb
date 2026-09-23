@@ -16,8 +16,8 @@ namespace GDB.App.Domain.Models
 
         AccountPrivilege Privilege { get; }
 
-        
 
+        bool CheckIfAccountIsActive(); 
         void Deposit(decimal amount);
         void Withdraw(decimal amount, string enteredPin);
         bool ValidatePin(string enteredPin);

@@ -18,6 +18,8 @@ namespace GDB.App.Domain.Models
         protected AccountStatus _status;
         protected string _pin;
         protected AccountPrivilege _privilege;
+        private const decimal WITHDRAWLIMIT=1000000m;
+        private const decimal DEPOSITLIMIT =1000000m;
 
         public Account(string accountNumber, string name, int age, decimal balance, AccountType accountType, AccountStatus status, string pin, AccountPrivilege privilege)
         {
@@ -60,7 +62,11 @@ namespace GDB.App.Domain.Models
         public void Deposit(decimal amount)
         {
             // TODO: Validate positive amount and add to balance
-            if (amount <= 0.0m) throw new InvalidAmountException("Deposit must be positive");
+
+            if (!CheckIfAccountIsActive()) throw new InactiveAccountException("Account is not active");
+
+            if (!CheckIfAmountIsValid(amount,DEPOSITLIMIT)) throw new InvalidAmountException("Deposit must be valid");
+
             _balance += amount;
         }
 
@@ -68,14 +74,40 @@ namespace GDB.App.Domain.Models
         // 2. Validate account status == "ACTIVE" (throw InactiveAccountException if not).
         // 3. Validate positive amount (throw InvalidAmountException if amount <= 0).
         // 4. Delegate to abstract ProcessDebit(amount).
+
+        //Template method design pattern-create a template to have a common piece of
+        //logic and enforce the subclasses to follow the template
         public void Withdraw(decimal amount, string enteredPin)
         {
+            if (!CheckIfAccountIsActive()) throw new InactiveAccountException("Account is not active");
+            
             if (!ValidatePin(enteredPin)) throw new InvalidPinException("Invalid PIN");
-            if (Enums.AccountStatus.Active != _status) throw new InactiveAccountException("Account is not active");
-            if (amount <= 0.0m) throw new InvalidAmountException("Withdrawal must be positive");
+            
+            if (!CheckIfAmountIsValid(amount, WITHDRAWLIMIT)) throw new InvalidAmountException("Withdrawal must be valid");
+            
             ProcessDebit(amount);
             
         }
+
+        public bool CheckIfAccountIsActive()
+        {
+            if(Enums.AccountStatus.Active != _status)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool CheckIfAmountIsValid(decimal amount, decimal limit)
+        {
+            if(amount <= 0.0m || amount>limit)
+            {
+                return false;
+            }
+            
+            return true;
+        }
+
 
         // TODO: Declare abstract primitive method to be implemented by each subclass:
         public abstract void ProcessDebit(decimal amount);

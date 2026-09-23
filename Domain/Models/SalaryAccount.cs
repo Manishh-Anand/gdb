@@ -20,15 +20,30 @@ namespace GDB.App.Domain.Models
 
         public override void ProcessDebit(decimal amount)
         {
-            if (amount > _balance)
+            if (!CheckInsufficientFunds(amount))
                 throw new InsufficientBalanceException("Insufficient funds in Salary account");
             _balance -= amount;
         }
-
+        public bool CheckInsufficientFunds(decimal amount)
+        {
+            if (amount > _balance)
+            {
+                return false;
+            }
+            return true;
+        }
         public void IncrementInactiveMonths()
         {
             _inactiveMonths++;
-            if (_inactiveMonths >= 3) _status = Enums.AccountStatus.Frozen;
+            if (!CheckInactiveMonthsDuration()) _status = Enums.AccountStatus.Frozen;
+        }
+        public bool CheckInactiveMonthsDuration()
+        {
+            if (_inactiveMonths >= 3)
+            {
+                return false;
+            }
+            return true;
         }
 
         public string EmployerName => _employerName;
