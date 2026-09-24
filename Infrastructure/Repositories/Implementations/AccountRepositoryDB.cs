@@ -300,11 +300,18 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                     "@PrincipalAmount",
                     fixedDeposit.Balance);
 
+                decimal maturityAmount = fixedDeposit.CalculateMaturityAmount();
+
+                AddParameter(
+                    command,
+                    "@MaturityAmount",
+                    maturityAmount);
+
                 command.ExecuteNonQuery();
             }
         }
 
-
+        
         private void SaveSalaryAccount(
             SalaryAccount salary,
             long accountId,
