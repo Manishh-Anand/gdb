@@ -1,10 +1,11 @@
-﻿using GDB.App.Domain.Enums;
+﻿using gdb.Logging;
+using GDB.App.Domain.Enums;
 using GDB.App.Domain.Models;
 using GDB.App.Infrastructure.Repositories.Contracts;
 using GDB.App.Infrastructure.Repositories.Queries;
-using System.Data.Common;
-using gdb.Logging;
 using Microsoft.Extensions.Logging;
+using System.Data;
+using System.Data.Common;
 
 namespace GDB.App.Infrastructure.Repositories.Implementations
 {
@@ -24,8 +25,8 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                     using (DbCommand command =
                            connection.CreateCommand())
                     {
-                        command.CommandText =
-                            AccountQueries.GetAccount;
+                        command.CommandText = "GetAccountt";
+                        command.CommandType = CommandType.StoredProcedure;
 
                         AddParameter(
                             command,
@@ -43,7 +44,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                     }
                 }
 
-                _logger.LogWarning("Account {AccountNumber} not found in DB", accountNumber);
+                _logger.LogWarning(
+                    "Account {AccountNumber} not found in DB",
+                    accountNumber);
+
                 return null;
             }
             catch (Exception ex)
@@ -76,8 +80,11 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                                connection.CreateCommand())
                         {
                             command.Transaction = transaction;
-                            command.CommandText =
-                                AccountQueries.InsertAccount;
+                            //command.CommandText =
+                            //    AccountQueries.InsertAccount;
+
+                            command.CommandText = "InsertAccount";
+                            command.CommandType = CommandType.StoredProcedure;
 
                             AddParameter(
                                 command,
@@ -206,8 +213,11 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                    connection.CreateCommand())
             {
                 command.Transaction = transaction;
-                command.CommandText =
-                    AccountQueries.InsertSavingsAccount;
+                //command.CommandText =
+                //    AccountQueries.InsertSavingsAccount;
+
+                command.CommandText = "InsertSavingsAccount";
+                command.CommandType = CommandType.StoredProcedure;
 
                 AddParameter(
                     command,
@@ -239,8 +249,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                    connection.CreateCommand())
             {
                 command.Transaction = transaction;
-                command.CommandText =
-                    AccountQueries.InsertCurrentAccount;
+                //command.CommandText =
+                //    AccountQueries.InsertCurrentAccount;
+                command.CommandText = "InsertCurrentAccount";
+                command.CommandType = CommandType.StoredProcedure;
 
                 AddParameter(
                     command,
@@ -267,8 +279,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                    connection.CreateCommand())
             {
                 command.Transaction = transaction;
-                command.CommandText =
-                    AccountQueries.InsertFixedDepositAccount;
+                //command.CommandText =
+                //    AccountQueries.InsertFixedDepositAccount;
+                command.CommandText = "InsertFixedDepositAccount";
+                command.CommandType = CommandType.StoredProcedure;
 
                 AddParameter(
                     command,
@@ -305,8 +319,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                    connection.CreateCommand())
             {
                 command.Transaction = transaction;
-                command.CommandText =
-                    AccountQueries.InsertSalaryAccount;
+                //command.CommandText =
+                //    AccountQueries.InsertSalaryAccount;
+                command.CommandText = "InsertSalaryAccount";
+                command.CommandType = CommandType.StoredProcedure;
 
                 AddParameter(
                     command,

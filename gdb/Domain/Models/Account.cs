@@ -1,7 +1,4 @@
-﻿using System;
-using System.Security.Principal;
-using GDB.App.Domain;
-using GDB.App.Domain.Enums;
+﻿using GDB.App.Domain.Enums;
 using GDB.App.Domain.Exceptions;
 
 namespace GDB.App.Domain.Models
@@ -18,8 +15,8 @@ namespace GDB.App.Domain.Models
         protected AccountStatus _status;
         protected string _pin;
         protected AccountPrivilege _privilege;
-        private const decimal WITHDRAWLIMIT=1000000m;
-        private const decimal DEPOSITLIMIT =1000000m;
+        private const decimal WITHDRAWLIMIT = 1000000m;
+        private const decimal DEPOSITLIMIT = 1000000m;
 
         public Account(string accountNumber, string name, int age, decimal balance, AccountType accountType, AccountStatus status, string pin, AccountPrivilege privilege)
         {
@@ -65,7 +62,7 @@ namespace GDB.App.Domain.Models
 
             if (!CheckIfAccountIsActive()) throw new InactiveAccountException("Account is not active");
 
-            if (!CheckIfAmountIsValid(amount,DEPOSITLIMIT)) throw new InvalidAmountException("Deposit must be valid");
+            if (!CheckIfAmountIsValid(amount, DEPOSITLIMIT)) throw new InvalidAmountException("Deposit must be valid");
 
             _balance += amount;
         }
@@ -80,18 +77,18 @@ namespace GDB.App.Domain.Models
         public void Withdraw(decimal amount, string enteredPin)
         {
             if (!CheckIfAccountIsActive()) throw new InactiveAccountException("Account is not active");
-            
+
             if (!ValidatePin(enteredPin)) throw new InvalidPinException("Invalid PIN");
-            
+
             if (!CheckIfAmountIsValid(amount, WITHDRAWLIMIT)) throw new InvalidAmountException("Withdrawal must be valid");
-            
+
             ProcessDebit(amount);
-            
+
         }
 
         public bool CheckIfAccountIsActive()
         {
-            if(Enums.AccountStatus.Active != _status)
+            if (Enums.AccountStatus.Active != _status)
             {
                 return false;
             }
@@ -100,11 +97,11 @@ namespace GDB.App.Domain.Models
 
         public bool CheckIfAmountIsValid(decimal amount, decimal limit)
         {
-            if(amount <= 0.0m || amount>limit)
+            if (amount <= 0.0m || amount > limit)
             {
                 return false;
             }
-            
+
             return true;
         }
 
