@@ -8,6 +8,7 @@ using GDB.App.Infrastructure.Repositories.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,9 +68,9 @@ namespace GDB.App.Application.Services.Implementations
                 account.Balance);
 
             _logger.LogInformation(
-                "Deposited {Amount} to {AccountNumber}",
-                transactionDto.Amount,
-                transactionDto.AccountNumber);
+    "Deposited {Amount} to {AccountNumber}",
+    transactionDto.Amount.ToString("C", new CultureInfo("en-IN")),
+    transactionDto.AccountNumber);
 
             return new DepositResponseDto
             {

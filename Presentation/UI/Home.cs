@@ -5,8 +5,10 @@ using GDB.App.Domain.Enums;
 using GDB.App.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +17,12 @@ namespace GDB.App.Presentation.UI
     public class Home
     {
         int choice;
-        public void Start()
+
+        private static string FormatRupee(decimal? amount) =>
+            amount.HasValue
+                ? amount.Value.ToString("C", new CultureInfo("en-IN"))
+
+                : "N/A"; public async Task Start()
         {
              choice = -1;
 
@@ -44,7 +51,7 @@ namespace GDB.App.Presentation.UI
                         break;
 
                     case 2:
-                        ViewAccountAsync();
+                        await ViewAccountAsync();
                         break;
 
                     case 3:
@@ -52,27 +59,27 @@ namespace GDB.App.Presentation.UI
                         break;
 
                     case 4:
-                        ViewBalanceAsync();
+                        await ViewBalanceAsync();
                         break;
 
                     case 5:
-                        ViewRecentTransactions();
+                        await ViewRecentTransactionsAsync();
                         break;
 
                     case 6:
-                        WithdrawAsync();
+                        await WithdrawAsync();
                         break;
 
                     case 7:
-                        DepositAsync();
+                        await DepositAsync();
                         break;
 
                     case 8:
-                        TransferFunds();
+                        await TransferFundsAsync();
                         break;
 
                     case 9:
-                        CloseAccount();
+                        await CloseAccountAsync();
                         break;
 
                     case 0:
@@ -225,14 +232,14 @@ namespace GDB.App.Presentation.UI
             Console.WriteLine($"Account Number : {response.AccountNumber}");
             Console.WriteLine($"Name           : {response.Name}");
             Console.WriteLine($"Account Type   : {response.AccountType}");
-            Console.WriteLine($"Balance        : {response.Balance:F2}");
+            Console.WriteLine($"Balance        : {FormatRupee(response.Balance)}");
             Console.WriteLine($"Status         : {response.Status}");
             Console.WriteLine($"Privilege      : {response.Privilege}");
             
         }
 
 
-        public async void ViewAccountAsync()
+        public async Task ViewAccountAsync()
         {
             //Accept accNo to get the accountInfo
             Console.WriteLine("Enter the account number.");
@@ -252,7 +259,7 @@ namespace GDB.App.Presentation.UI
             Console.WriteLine();
             Console.WriteLine("Account Number : " + account.AccountNumber);
             Console.WriteLine("Name           : " + account.Name);
-            Console.WriteLine("Balance        : " + account.Balance);
+            Console.WriteLine($"Balance       : {FormatRupee(account.Balance)}");
         }
         public void ViewAllAccounts()
         {
@@ -270,12 +277,12 @@ namespace GDB.App.Presentation.UI
                 Console.WriteLine("Account Number : " + account.AccountNumber);
                 Console.WriteLine("Name           : " + account.Name);
                 Console.WriteLine("Age            : " + account.Age);
-                Console.WriteLine("Balance        : " + account.Balance);
+                Console.WriteLine($"Balance       : {FormatRupee(account.Balance)}");
                 Console.WriteLine("Status         : " + account.AccountStatus);
                 Console.WriteLine("Privilege      : " + account.AccountPrivilege);
             }
         }
-        public async void ViewBalanceAsync()
+        public async Task ViewBalanceAsync()
         {
             Console.WriteLine("Enter Account Number:");
             string accountNumber = Console.ReadLine();
@@ -291,11 +298,11 @@ namespace GDB.App.Presentation.UI
             }
 
             Console.WriteLine();
-            Console.WriteLine("Balance        : " + account.Balance);
+            Console.WriteLine($"Balance  : {FormatRupee(account.Balance)}");
             
 
         }
-        public async void ViewRecentTransactions()
+        public async Task ViewRecentTransactionsAsync()
         {
             Console.WriteLine();
             Console.WriteLine("===== VIEW RECENT TRANSACTIONS =====");
@@ -339,8 +346,7 @@ namespace GDB.App.Presentation.UI
                     Console.WriteLine(
                         $"Transaction Type : {transaction.TransactionType}");
 
-                    Console.WriteLine(
-                        $"Amount           : {transaction.Amount:F2}");
+                    Console.WriteLine($"Amount  : {FormatRupee(transaction.Amount)}");
 
                     Console.WriteLine(
                         $"Status           : {transaction.TransactionStatus}");
@@ -351,13 +357,13 @@ namespace GDB.App.Presentation.UI
                     if (transaction.BalanceAfterFrom.HasValue)
                     {
                         Console.WriteLine(
-                            $"Balance After From : {transaction.BalanceAfterFrom:F2}");
+                            $"Balance After From : {FormatRupee(transaction.BalanceAfterFrom)}");
                     }
 
                     if (transaction.BalanceAfterTo.HasValue)
                     {
                         Console.WriteLine(
-                            $"Balance After To   : {transaction.BalanceAfterTo:F2}");
+                            $"Balance After To   : {FormatRupee(transaction.BalanceAfterTo)}");
                     }
                 }
 
@@ -370,7 +376,7 @@ namespace GDB.App.Presentation.UI
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-        public async void WithdrawAsync()
+        public async Task WithdrawAsync()
         {
             Console.WriteLine("Enter Account Number:");
             string accountNumber = Console.ReadLine();
@@ -392,7 +398,7 @@ namespace GDB.App.Presentation.UI
                     amount
                 );
 
-                Console.WriteLine("Balance: "+account.Balance);
+                Console.WriteLine($"Balance  : {FormatRupee(account.Balance)}");
                 Console.WriteLine("Status: " + account.TransactionStat);
             }
             catch (Exception ex)
@@ -401,7 +407,7 @@ namespace GDB.App.Presentation.UI
             }
 
         }
-        public async void DepositAsync()
+        public async Task DepositAsync()
         {
             Console.WriteLine("Enter Account Number:");
             string accountNumber = Console.ReadLine();
@@ -416,7 +422,7 @@ namespace GDB.App.Presentation.UI
 
                 var account = await controller.DepositAsync(accountNumber, amount);
 
-                Console.WriteLine("Balance: " + account.Balance);
+                Console.WriteLine($"Balance   : {FormatRupee(account.Balance)}");
                 Console.WriteLine("Status: " + account.TransactionStat);
             }
             catch (Exception ex)
@@ -424,7 +430,7 @@ namespace GDB.App.Presentation.UI
                 Console.WriteLine(ex.Message);
             }
         }
-        public async void TransferFunds()
+        public async Task TransferFundsAsync()
         {
             Console.WriteLine("Enter From Account Number:");
             string fromAccountNumber = Console.ReadLine();
@@ -461,7 +467,7 @@ namespace GDB.App.Presentation.UI
                 Console.WriteLine(ex.Message);
             }
         }
-        public async void CloseAccount()
+        public async Task CloseAccountAsync()
         {
             Console.WriteLine("===== CLOSE ACCOUNT =====");
 
