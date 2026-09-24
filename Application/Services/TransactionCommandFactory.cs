@@ -1,6 +1,7 @@
 ﻿using GDB.App.Application.Dtos;
 using GDB.App.Application.Services.Contracts;
 using GDB.App.Application.Services.Implementations;
+using GDB.App.Domain.Enums;
 using GDB.App.Infrastructure.Repositories;
 using GDB.App.Infrastructure.Repositories.Contracts;
 using System;
@@ -13,8 +14,8 @@ namespace GDB.App.Application.Services
 {
     public static class TransactionCommandFactory
     {
-        public static ITransactionCommand<DepositResponseDto>
-            CreateDepositCommand()
+        public static ITransactionCommand<TResponse> Create<TResponse>(
+            TransactionType transactionType)
         {
             IAccountRepository accountRepository =
                 AccountRepositoryFactory.Create("DB");
@@ -22,39 +23,26 @@ namespace GDB.App.Application.Services
             ITransactionRepository transactionRepository =
                 TransactionRepositoryFactory.Create("DB");
 
-            return new DepositTransactionCommand(
-                accountRepository,
-                transactionRepository);
-        }
+            return transactionType switch
+            {
+                TransactionType.Deposit =>
+                    (ITransactionCommand<TResponse>)new DepositTransactionCommand(
+                        accountRepository,
+                        transactionRepository),
 
+                TransactionType.Withdraw =>
+                    (ITransactionCommand<TResponse>)new WithdrawTransactionCommand(
+                        accountRepository,
+                        transactionRepository),
 
-        public static ITransactionCommand<WithdrawResponseDto>
-            CreateWithdrawCommand()
-        {
-            IAccountRepository accountRepository =
-                AccountRepositoryFactory.Create("DB");
+                TransactionType.Transfer =>
+                    (ITransactionCommand<TResponse>)new TransferTransactionCommand(
+                        accountRepository,
+                        transactionRepository),
 
-            ITransactionRepository transactionRepository =
-                TransactionRepositoryFactory.Create("DB");
-
-            return new WithdrawTransactionCommand(
-                accountRepository,
-                transactionRepository);
-        }
-
-
-        public static ITransactionCommand<TranferFundsResponseDto>
-            CreateTransferCommand()
-        {
-            IAccountRepository accountRepository =
-                AccountRepositoryFactory.Create("DB");
-
-            ITransactionRepository transactionRepository =
-                TransactionRepositoryFactory.Create("DB");
-
-            return new TransferTransactionCommand(
-                accountRepository,
-                transactionRepository);
+                _ => throw new ArgumentException(
+                    $"Invalid transaction type: {transactionType}")
+            };
         }
     }
 }
