@@ -10,7 +10,7 @@ using GDB.App.Application.Services.Contracts;
 
 namespace GDB.App.Application.Services
 {
-    internal class AccountServiceFactory
+    public class AccountServiceFactory
     {
         public static IAccountService Create()
         {

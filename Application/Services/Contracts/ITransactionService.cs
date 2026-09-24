@@ -11,16 +11,20 @@ namespace GDB.App.Application.Services.Contracts
 {
     public interface ITransactionService
     {
-        Task<List<ViewRecentTransactionsResponseDto>> GetRecentTransactionsAsync(
-           string accountNumber);
-        Task<DepositResponseDto> DepositAsync(string accountNumber, decimal amount);
+        //Task<List<ViewRecentTransactionsResponseDto>> GetRecentTransactionsAsync(
+        //   string accountNumber);
+        //Task<DepositResponseDto> DepositAsync(string accountNumber, decimal amount);
 
-        Task<WithdrawResponseDto> WithdrawAsync(string accountNumber, string pin, decimal amount);
+        //Task<WithdrawResponseDto> WithdrawAsync(string accountNumber, string pin, decimal amount);
 
-        Task<TranferFundsResponseDto> TransferFundsAsync(
-            string fromAccountNumber,
-            string toAccountNumber,
-            string pin,
-            decimal amount);
+        //Task<TranferFundsResponseDto> TransferFundsAsync(
+        //    string fromAccountNumber,
+        //    string toAccountNumber,
+        //    string pin,
+        //    decimal amount);
+
+        Task<TResponse> ExecuteAsync<TResponse>(
+            ITransactionCommand<TResponse> command,
+            Dtos.TransactionDto transactionDto);
     }
 }

@@ -5,6 +5,8 @@ using GDB.App.Infrastructure.Repositories.Queries;
 using System.Data.Common;
 using gdb.Logging;
 using Microsoft.Extensions.Logging;
+using System.Data;
+//using System.Data.SqlClient;
 
 namespace GDB.App.Infrastructure.Repositories.Implementations
 {
@@ -16,26 +18,23 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
         {
             try
             {
-                using (DbConnection connection =
-                       DataBaseConnectionManager.GetConnection())
+                using (DbConnection connection = DataBaseConnectionManager.GetConnection())
                 {
-                    connection.Open();
+                    await connection.OpenAsync().ConfigureAwait(false);
 
-                    using (DbCommand command =
-                           connection.CreateCommand())
+                    using (DbCommand command = connection.CreateCommand())
                     {
-                        command.CommandText =
-                            AccountQueries.GetAccount;
+                        command.CommandText = AccountQueries.GetAccount;
+                        command.CommandType = CommandType.StoredProcedure;
 
                         AddParameter(
                             command,
                             "@AccountNumber",
                             accountNumber);
 
-                        using (DbDataReader reader =
-                               command.ExecuteReader())
+                        using (DbDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                         {
-                            if (reader.Read())
+                            if (await reader.ReadAsync().ConfigureAwait(false))
                             {
                                 return CreateAccount(reader);
                             }
@@ -76,8 +75,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
                                connection.CreateCommand())
                         {
                             command.Transaction = transaction;
-                            command.CommandText =
-                                AccountQueries.InsertAccount;
+                            command.CommandText =AccountQueries.CreateAccount;
+
+                            command.CommandType =
+                                CommandType.StoredProcedure;
 
                             AddParameter(
                                 command,
@@ -207,7 +208,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
             {
                 command.Transaction = transaction;
                 command.CommandText =
-                    AccountQueries.InsertSavingsAccount;
+    AccountQueries.InsertSavingsAccount;
+
+                command.CommandType =
+                    CommandType.StoredProcedure;
 
                 AddParameter(
                     command,
@@ -240,7 +244,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
             {
                 command.Transaction = transaction;
                 command.CommandText =
-                    AccountQueries.InsertCurrentAccount;
+     AccountQueries.InsertCurrentAccount;
+
+                command.CommandType =
+                    CommandType.StoredProcedure;
 
                 AddParameter(
                     command,
@@ -268,7 +275,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
             {
                 command.Transaction = transaction;
                 command.CommandText =
-                    AccountQueries.InsertFixedDepositAccount;
+    AccountQueries.InsertFixedDepositAccount;
+
+                command.CommandType =
+                    CommandType.StoredProcedure;
 
                 AddParameter(
                     command,
@@ -306,8 +316,10 @@ namespace GDB.App.Infrastructure.Repositories.Implementations
             {
                 command.Transaction = transaction;
                 command.CommandText =
-                    AccountQueries.InsertSalaryAccount;
+    AccountQueries.InsertSalaryAccount;
 
+                command.CommandType =
+                    CommandType.StoredProcedure;
                 AddParameter(
                     command,
                     "@AccountId",
