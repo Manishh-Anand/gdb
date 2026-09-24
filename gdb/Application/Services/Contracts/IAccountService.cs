@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace GDB.App.Application.Services.Contracts
 {
-    internal interface IAccountService
+    public interface IAccountService
     {
        Task<IAccount> GetAccountAsync(string accNo);
         //List<IAccount> GetAllAccounts();

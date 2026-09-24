@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36429.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GDB.App", "gdb\GDB.App.csproj", "{03EE96A2-37FE-9C95-A104-7FA4E51AD0D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GDB.App.Test", "GDB.App.Test\GDB.App.Test.csproj", "{9119C8DC-C8F4-470C-AA7D-83406A8C9896}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03EE96A2-37FE-9C95-A104-7FA4E51AD0D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03EE96A2-37FE-9C95-A104-7FA4E51AD0D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03EE96A2-37FE-9C95-A104-7FA4E51AD0D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03EE96A2-37FE-9C95-A104-7FA4E51AD0D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9119C8DC-C8F4-470C-AA7D-83406A8C9896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9119C8DC-C8F4-470C-AA7D-83406A8C9896}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9119C8DC-C8F4-470C-AA7D-83406A8C9896}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9119C8DC-C8F4-470C-AA7D-83406A8C9896}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DF87D6B2-5E2B-4BD7-A725-DC9D6B793AE7}
+	EndGlobalSection
+EndGlobal

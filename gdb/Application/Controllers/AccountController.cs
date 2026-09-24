@@ -14,7 +14,7 @@ using System.Xml.Linq;
 
 namespace GDB.App.Application.Controllers
 {
-    internal class AccountController
+    public class AccountController
     {
         private IAccountService _accountService;
         public AccountController()

@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GDB.App.Application.Services.Implementations
 {
-    internal class AccountService : IAccountService
+    public class AccountService : IAccountService
     {
         //Business Logic 
         //composition

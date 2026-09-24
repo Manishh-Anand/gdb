@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace GDB.App.Application.Services
 {
-    internal class TransactionServiceFactory
+    public static class TransactionQueryServiceFactory
     {
-
-        public static ITransactionService Create()
+        public static ITransactionQueryService Create()
         {
-            return new TransactionService();
+            return new TransactionQueryService();
         }
     }
 }
