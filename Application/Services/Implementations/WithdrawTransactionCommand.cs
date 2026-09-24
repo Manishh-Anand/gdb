@@ -8,6 +8,7 @@ using GDB.App.Infrastructure.Repositories.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,9 +73,9 @@ namespace GDB.App.Application.Services.Implementations
                 0);
 
             _logger.LogInformation(
-                "Withdrew {Amount} from {AccountNumber}",
-                transactionDto.Amount,
-                transactionDto.AccountNumber);
+    "Withdrew {Amount} from {AccountNumber}",
+    transactionDto.Amount.ToString("C", new CultureInfo("en-IN")),
+    transactionDto.AccountNumber);
 
             return new WithdrawResponseDto
             {

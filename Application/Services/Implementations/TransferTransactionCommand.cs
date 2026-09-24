@@ -8,6 +8,7 @@ using GDB.App.Infrastructure.Repositories.Contracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -108,10 +109,10 @@ namespace GDB.App.Application.Services.Implementations
                 toAccount.Balance);
 
             _logger.LogInformation(
-                "Transferred {Amount} from {FromAccount} to {ToAccount}",
-                transactionDto.Amount,
-                transactionDto.FromAccount,
-                transactionDto.ToAccount);
+    "Transferred {Amount} from {FromAccount} to {ToAccount}",
+    transactionDto.Amount.ToString("C", new CultureInfo("en-IN")),
+    transactionDto.FromAccount,
+    transactionDto.ToAccount);
 
             return new TranferFundsResponseDto
             {

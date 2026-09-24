@@ -5,6 +5,7 @@ using GDB.App.Domain.Exceptions;
 using GDB.App.Domain.Models;
 using GDB.App.Infrastructure.Repositories;
 using System;
+using System.Text;
 
 
 namespace GDB.App.Presentation.UI
@@ -27,7 +28,7 @@ namespace GDB.App.Presentation.UI
         //    }
         //}
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             DataBaseProviderRegistration.Register();
             //    Console.WriteLine("=== Activity 10: Abstract Classes & Template Method Tests ===");
@@ -80,8 +81,8 @@ namespace GDB.App.Presentation.UI
 
 
 
-
-            new Home().Start();
+            Console.OutputEncoding = Encoding.UTF8;
+            await new Home().Start();
         }
     }
 }
