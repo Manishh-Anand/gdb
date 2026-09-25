@@ -430,8 +430,24 @@ namespace GDB.App.Presentation.UI
             Console.WriteLine("Enter Account Number:");
             string accountNumber = Console.ReadLine().Trim();
 
+            // Check if the user has entered valid Account Number or not
+            while (!IsValidAccountNumberInput(accountNumber))
+            {
+                Console.WriteLine("Invalid account number. Please enter a 10-digit numeric account number.");
+                Console.Write("Enter Account Number: ");
+                accountNumber = Console.ReadLine()!;
+            }
+
             Console.WriteLine("Enter PIN:");
             string pin = Console.ReadLine().Trim();
+
+            // Check if the user has entered valid Account Number or not
+            while (!IsValidAccountNumberInput(accountNumber))
+            {
+                Console.WriteLine("Invalid account number. Please enter a 10-digit numeric account number.");
+                Console.Write("Enter Account Number: ");
+                accountNumber = Console.ReadLine()!;
+            }
 
             Console.WriteLine("Enter Amount:");
             decimal amount = decimal.Parse(Console.ReadLine().Trim());
@@ -461,6 +477,14 @@ namespace GDB.App.Presentation.UI
             Console.WriteLine("Enter Account Number:");
             string accountNumber = Console.ReadLine();
 
+            // Check if the user has entered valid Account Number or not
+            while (!IsValidAccountNumberInput(accountNumber))
+            {
+                Console.WriteLine("Invalid account number. Please enter a 10-digit numeric account number.");
+                Console.Write("Enter Account Number: ");
+                accountNumber = Console.ReadLine()!;
+            }
+
             Console.WriteLine("Enter Amount:");
             decimal amount = decimal.Parse(Console.ReadLine());
 
@@ -484,11 +508,35 @@ namespace GDB.App.Presentation.UI
             Console.WriteLine("Enter From Account Number:");
             string fromAccountNumber = Console.ReadLine();
 
+            // Check if the user has entered valid Account Number or not
+            while (!IsValidAccountNumberInput(fromAccountNumber))
+            {
+                Console.WriteLine("Invalid account number. Please enter a 10-digit numeric account number.");
+                Console.Write("Enter Account Number: ");
+                fromAccountNumber = Console.ReadLine()!;
+            }
+
             Console.WriteLine("Enter To Account Number:");
             string toAccountNumber = Console.ReadLine();
 
-            Console.WriteLine("Enter PIN:");
-            string pin = Console.ReadLine();
+            // Check if the user has entered valid Account Number or not
+            while (!IsValidAccountNumberInput(toAccountNumber))
+            {
+                Console.WriteLine("Invalid account number. Please enter a 10-digit numeric account number.");
+                Console.Write("Enter Account Number: ");
+                toAccountNumber = Console.ReadLine()!;
+            }
+
+            // Check if the user has entered valid PIN or not
+            Console.Write("Enter PIN: ");
+            var pin = Console.ReadLine()!.Trim();
+
+            while (!IsValidPinInput(pin))
+            {
+                Console.WriteLine("Invalid PIN. Please enter a 4-digit numeric PIN.");
+                Console.Write("Enter PIN: ");
+                pin = Console.ReadLine()!.Trim();
+            }
 
             Console.WriteLine("Enter Amount:");
             decimal amount = decimal.Parse(Console.ReadLine());
@@ -526,6 +574,14 @@ namespace GDB.App.Presentation.UI
 
             Console.Write("Enter Account Number: ");
             string accountNumber = Console.ReadLine()!;
+
+            // Check if the user has entered valid Account Number or not
+            while (!IsValidAccountNumberInput(accountNumber))
+            {
+                Console.WriteLine("Invalid account number. Please enter a 10-digit numeric account number.");
+                Console.Write("Enter Account Number: ");
+                accountNumber = Console.ReadLine()!;
+            }
 
             try
             {
