@@ -56,7 +56,14 @@ namespace GDB.App.Application.Controllers
 
         public CreateAccountResponseDto CreateAccount(CreateAccountRequestDto request)
         {
-            return _accountService.CreateAccount(request);
+            try
+            {
+                return _accountService.CreateAccount(request);
+            }
+            catch(InvalidOperationException ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<CloseAccountResponseDto> CloseAccountAsync(CloseAccountRequestDto request)

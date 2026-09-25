@@ -1,7 +1,9 @@
 ﻿using GDB.App.Application.Controllers;
 using GDB.App.Application.Dtos;
+using GDB.App.Application.Services.Contracts;
 using GDB.App.Application.Services.Implementations;
 using GDB.App.Domain.Enums;
+using GDB.App.Domain.Exceptions;
 using GDB.App.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GDB.App.Presentation.UI
@@ -20,9 +23,27 @@ namespace GDB.App.Presentation.UI
 
         private static string FormatRupee(decimal? amount) =>
             amount.HasValue
-                ? amount.Value.ToString("C", new CultureInfo("en-IN"))
+                ? amount.Value.ToString("C", new CultureInfo("en-IN")): "N/A";
 
-                : "N/A"; public async Task Start()
+        private static bool IsValidAccountNumberInput(string acc)
+        {
+            if (string.IsNullOrWhiteSpace(acc)) return false;
+            acc = acc.Trim();
+
+            // Example rule: exactly 10 digits. Change to suit your business rule.
+            return Regex.IsMatch(acc, @"^\d{10}$");
+        }
+
+        private static bool IsValidPinInput(string pin)
+        {
+            if (string.IsNullOrWhiteSpace(pin)) return false;
+            pin = pin.Trim();
+
+            // Rule: exactly 4 digits
+            return Regex.IsMatch(pin, @"^\d{4}$");
+        }
+
+        public async Task Start()
         {
              choice = -1;
 
@@ -102,19 +123,37 @@ namespace GDB.App.Presentation.UI
             Console.WriteLine("===== CREATE ACCOUNT =====");
 
             Console.Write("Enter Account Number: ");
-            string accountNumber = Console.ReadLine()!;
+            var accountNumber = Console.ReadLine().Trim();
+
+            // Check if the user has entered valid Account Number or not
+            while (!IsValidAccountNumberInput(accountNumber))
+            {
+                Console.WriteLine("Invalid account number. Please enter a 10-digit numeric account number.");
+                Console.Write("Enter Account Number: ");
+                accountNumber = Console.ReadLine()!;
+            }
 
             Console.Write("Enter Name: ");
-            string name = Console.ReadLine()!;
+            var name = Console.ReadLine().Trim();
 
             Console.Write("Enter Age: ");
-            int age = Convert.ToInt32(Console.ReadLine());
+            var age = Convert.ToInt32(Console.ReadLine().Trim());
 
             Console.Write("Enter Initial Balance: ");
-            decimal balance = Convert.ToDecimal(Console.ReadLine());
+            var balance = Convert.ToDecimal(Console.ReadLine().Trim());
 
             Console.Write("Enter PIN: ");
-            string pin = Console.ReadLine()!;
+            var pin = Console.ReadLine()!.Trim();
+
+            // Check if the user has entered valid PIN or not
+            while (!IsValidPinInput(pin))
+            {
+                Console.WriteLine("Invalid PIN. Please enter a 4-digit numeric PIN.");
+                Console.Write("Enter PIN: ");
+                pin = Console.ReadLine()!.Trim();
+            }
+
+            
 
             Console.WriteLine("Select Account Type:");
             Console.WriteLine("1. Savings");
@@ -214,27 +253,37 @@ namespace GDB.App.Presentation.UI
                 EmployerName = employerName
             };
 
-            // ============================================================
-            // SEND REQUEST DTO TO CONTROLLER
-            // AND RECEIVE RESPONSE DTO
-            // ============================================================
+            
 
-            CreateAccountResponseDto response =
+            try
+            {
+                // ============================================================
+                // SEND REQUEST DTO TO CONTROLLER
+                // AND RECEIVE RESPONSE DTO
+                // ============================================================
+
+
+                CreateAccountResponseDto response =
                 controller.CreateAccount(request);
 
-            // ============================================================
-            // DISPLAY RESPONSE DTO
-            // ============================================================
+                // ============================================================
+                // DISPLAY RESPONSE DTO
+                // ============================================================
 
-            Console.WriteLine();
-            Console.WriteLine("===== ACCOUNT CREATED SUCCESSFULLY =====");
+                Console.WriteLine();
+                Console.WriteLine("===== ACCOUNT CREATED SUCCESSFULLY =====");
 
-            Console.WriteLine($"Account Number : {response.AccountNumber}");
-            Console.WriteLine($"Name           : {response.Name}");
-            Console.WriteLine($"Account Type   : {response.AccountType}");
-            Console.WriteLine($"Balance        : {FormatRupee(response.Balance)}");
-            Console.WriteLine($"Status         : {response.Status}");
-            Console.WriteLine($"Privilege      : {response.Privilege}");
+                Console.WriteLine($"Account Number : {response.AccountNumber}");
+                Console.WriteLine($"Name           : {response.Name}");
+                Console.WriteLine($"Account Type   : {response.AccountType}");
+                Console.WriteLine($"Balance        : {FormatRupee(response.Balance)}");
+                Console.WriteLine($"Status         : {response.Status}");
+                Console.WriteLine($"Privilege      : {response.Privilege}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine("\n" + ex.Message);
+            }
             
         }
 
@@ -379,13 +428,13 @@ namespace GDB.App.Presentation.UI
         public async Task WithdrawAsync()
         {
             Console.WriteLine("Enter Account Number:");
-            string accountNumber = Console.ReadLine();
+            string accountNumber = Console.ReadLine().Trim();
 
             Console.WriteLine("Enter PIN:");
-            string pin = Console.ReadLine();
+            string pin = Console.ReadLine().Trim();
 
             Console.WriteLine("Enter Amount:");
-            decimal amount = decimal.Parse(Console.ReadLine());
+            decimal amount = decimal.Parse(Console.ReadLine().Trim());
 
             try
             {
@@ -446,6 +495,10 @@ namespace GDB.App.Presentation.UI
 
             try
             {
+                if (fromAccountNumber.Equals(toAccountNumber))
+                {
+                    throw new AccountException("\nSource Account and Destination Account cannot be the same");
+                }
                 TransactionController controller =
                     new TransactionController();
 
@@ -464,7 +517,7 @@ namespace GDB.App.Presentation.UI
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("\n" + ex.Message);
             }
         }
         public async Task CloseAccountAsync()
@@ -494,14 +547,16 @@ namespace GDB.App.Presentation.UI
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"\nError: {ex.Message}");
             }
         }
         public void Exit()
         {
-            Console.WriteLine("Thank you for using GDB.");
+            Console.WriteLine("\nThank you for using GDB.");
             choice = 0;
         }
+
+        
 
     }
 }

@@ -325,6 +325,13 @@ namespace GDB.App.Application.Services.Implementations
         /// </example>
         public CreateAccountResponseDto CreateAccount(CreateAccountRequestDto request)
         {
+            // Check if the Account already Exists
+            var existing = _accountRepository.GetAccountAsync(request.AccountNumber).GetAwaiter().GetResult();
+            if (existing != null)
+            {
+                throw new InvalidOperationException($"Account {request.AccountNumber} already exists.");
+            }
+
             // Create appropriate account type using factory pattern
             Account account = AccountFactory.CreateAccount(
                 request.AccountType,
